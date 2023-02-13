@@ -1,0 +1,32 @@
+{
+  "name": "bertoost/craft-mailerchain",
+  "description": "Craft CMS plugin for adding Mailjet mail adapter.",
+  "type": "craft-plugin",
+  "keywords": [
+    "craft",
+    "craftcms",
+    "plugin",
+    "craftcms plugin",
+    "mailer",
+    "adapter"
+  ],
+  "homepage": "https://github.com/bertoost/Craft-MailerChain",
+  "license": "MIT",
+  "require": {
+    "php": "^8.0",
+    "craftcms/cms": "^4.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "bertoost\\mailerchain\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Mailer Chain",
+    "handle": "mailerchain",
+    "hasCpSection": true,
+    "developer": "Bert Oost",
+    "developerUrl": "https://bertoost.com",
+    "documentationUrl": "https://github.com/bertoost/Craft-MailerChain/blob/master/README.md"
+  }
+}

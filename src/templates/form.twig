@@ -1,0 +1,94 @@
+{% extends '_layouts/cp' -%}
+{% import '_includes/forms.twig' as forms %}
+
+{% set title = chainAdapter is defined ? 'Edit' | t('mailerchain') ~ ': ' ~ chainAdapter.title : 'New Mailer Chain' | t('mailerchain') -%}
+{% set fullPageForm = true -%}
+
+{% do view.registerTranslations('app', [
+    "Email sent successfully! Check your inbox.",
+]) %}
+
+{% set crumbs = [{
+    label: 'Mailer Chain' | t('mailerchain'),
+    url: url('mailerchain')
+}] -%}
+
+{% if chainAdapter is defined -%}
+    {% set crumbs = crumbs | merge([{
+        label: 'Edit Mailer Chain' | t('mailerchain'),
+        url: url('mailerchain/edit/' ~ chainAdapter.id),
+    }]) -%}
+{%- else -%}
+    {% set crumbs = crumbs | merge([{
+        label: 'New Mailer Chain' | t('mailerchain'),
+        url: url('mailerchain/new'),
+    }]) -%}
+{%- endif %}
+
+{% set tabs = {
+    content: {
+        label: 'General'|t('app'),
+        url: '#general',
+    },
+    settings: {
+        label: 'Transport Type'|t('app'),
+        url: '#transporttype',
+    },
+} -%}
+
+{% block content %}
+    {{ actionInput('mailerchain/adapter/save') }}
+
+    {# include mail-settings for test feature #}
+    {{ hiddenInput('fromEmail', mailSettings.fromEmail) }}
+    {{ hiddenInput('fromName', mailSettings.fromName) }}
+    {{ hiddenInput('replyToEmail', mailSettings.replyToEmail) }}
+    {{ hiddenInput('template', mailSettings.template) }}
+
+    {% if chainAdapter is defined -%}
+        {{ hiddenInput('id', chainAdapter.id) }}
+    {%- endif %}
+
+    <div id="general">
+        {{ forms.textField({
+            id: 'title',
+            name: 'title',
+            label: 'Title' | t('app'),
+            tip: 'When leaving the title empty, it will save the display name of the transport type.' | t('mailerchain'),
+            value: chainAdapter.title ?? '',
+        }) }}
+    </div>
+
+    <div id="transporttype" class="hidden">
+        {{ forms.selectField({
+            label: 'Transport Type' | t('app'),
+            instructions: 'How should Craft CMS send the emails?' | t('app'),
+            id: 'transportType',
+            name: 'transportType',
+            options: transportTypeOptions,
+            value: adapter is defined ? className(adapter) : '',
+            errors: adapter.getErrors('type') ?? null,
+            toggle: true
+        }) }}
+
+        {% for option in transportTypeOptions -%}
+            {% set _adapter = option.adapter -%}
+            {% set isCurrent = (adapter is defined and className(_adapter) == className(adapter)) %}
+            <div id="{{ className(_adapter) | id }}"{% if not isCurrent %} class="hidden"{% endif %}>
+                {% namespace 'transportTypes[' ~ className(_adapter) ~ ']' %}
+                    {{ (isCurrent ? adapter : _adapter).getSettingsHtml()|raw }}
+                {% endnamespace %}
+            </div>
+        {%- endfor %}
+
+        <hr>
+
+        <div class="buttons">
+            <button type="button" id="test" class="btn formsubmit" data-action="system-settings/test-email-settings">
+                {{ 'Test' | t('app') }}
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+

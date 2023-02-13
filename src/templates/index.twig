@@ -1,0 +1,41 @@
+{% extends "_layouts/cp" -%}
+{% set title = 'Mailer Chain' -%}
+
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% block actionButton %}
+    <a href="{{ url('mailerchain/new') }}" class="btn submit add icon">{{ 'New Mailer' | t('mailerchain') }}</a>
+{% endblock %}
+
+{% set tableData = [] -%}
+{% for chainAdapter in chainAdapters -%}
+    {% set tableData = tableData|merge([{
+        id: chainAdapter.id,
+        title: chainAdapter.title,
+        transportType: chainAdapter.transportType,
+        sent: chainAdapter.sent,
+        url: url('mailerchain/edit/' ~ chainAdapter.id)
+    }]) -%}
+{%- endfor %}
+
+{% block content %}
+    <div id="mailerchain-vue-admin-table"></div>
+{% endblock %}
+
+{% js %}
+    var columns = [
+        { name: '__slot:title', title: Craft.t('app', 'Name') },
+        { name: 'transportType', title: Craft.t('app', 'Transport Type') },
+        { name: 'sent', title: Craft.t('mailerchain', 'Sent') },
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#mailerchain-vue-admin-table',
+        reorderAction: '{{ chainAdapters|length > 1 ? 'mailerchain/adapter/reorder' : ''}}',
+        deleteAction: 'mailerchain/adapter/delete',
+        deleteConfirmationMessage: Craft.t('mailerchain', 'Are you sure you want to delete "{name}" from the list?'),
+        emptyMessage: Craft.t('app', 'No mailers in the chain exist yet.'),
+        tableData: {{ tableData|json_encode|raw }}
+    });
+{% endjs %}

@@ -1,7 +1,7 @@
 <h1 align="center">Mailer Chain for Craft CMS</h1>
 
 This plugin provides a mailer adapter integration for [Craft CMS](https://craftcms.com/) to configure a chain 
-of mailers and to configure limiters for each mailer.
+of mailers and send randomly through one of the configured mailers.
 
 ## Requirements
 
@@ -30,3 +30,9 @@ composer require bertoost/craft-mailerchain
 # tell Craft to install the plugin
 ./craft install/plugin mailerchain
 ```
+
+## Sending e-mails
+
+Just use the Craft Mailer to send emails, normally.
+
+This plugin acts like a mail adapter and passes a random configured adapter to the Mailer.
