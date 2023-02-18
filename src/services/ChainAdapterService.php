@@ -8,6 +8,8 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\MailerHelper;
 use craft\mail\transportadapters\TransportAdapterInterface;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use yii\symfonymailer\Mailer;
 
 class ChainAdapterService extends Component
 {
@@ -42,6 +44,18 @@ class ChainAdapterService extends Component
         }
 
         return $transportTypeOptions;
+    }
+
+    /**
+     * When the defined transport is a configuration array, there probably is a native support transporter for it
+     * try figuring out this, by calling the set/get transporter of the mailer
+     */
+    public function determineMailerTransportByConfig(array $transportConfig): TransportInterface
+    {
+        $mailer = new Mailer();
+        $mailer->setTransport($transportConfig);
+
+        return $mailer->getTransport();
     }
 
     public function increaseSentByTransport(string $transportClass): bool

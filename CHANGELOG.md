@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Fixed storing transport class based on native transport determination
 - Fixed getting mailer settings at new creation of a chain record
 
 ## v1.0.0-beta1 - 2023-02-13
