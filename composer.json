@@ -1,6 +1,6 @@
 {
   "name": "bertoost/craft-mailerchain",
-  "description": "Craft CMS plugin for adding Mailjet mail adapter.",
+  "description": "Craft CMS plugin for adding a chain of mail adapters.",
   "type": "craft-plugin",
   "keywords": [
     "craft",
@@ -8,6 +8,7 @@
     "plugin",
     "craftcms plugin",
     "mailer",
+    "chain",
     "adapter"
   ],
   "homepage": "https://github.com/bertoost/Craft-MailerChain",
