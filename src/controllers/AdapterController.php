@@ -34,6 +34,7 @@ class AdapterController extends Controller
 
         return $this->renderTemplate('mailerchain/form.twig', [
             'transportTypeOptions' => $transportTypeOptions,
+            'mailSettings' => App::mailSettings(),
         ]);
     }
 
