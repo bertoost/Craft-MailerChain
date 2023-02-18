@@ -14,9 +14,9 @@ class ChainAdapter extends Element
 {
     public string $transportType;
 
-    public ?array $transportSettings;
+    public ?array $transportSettings = null;
 
-    public string $transportClass;
+    public ?string $transportClass = null;
 
     public int $sent = 0;
 
