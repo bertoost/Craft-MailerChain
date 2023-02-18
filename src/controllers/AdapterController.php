@@ -71,6 +71,7 @@ class AdapterController extends Controller
         $chainAdapter->title = $this->request->getBodyParam('title');
         $chainAdapter->transportType = $this->request->getRequiredBodyParam('transportType');
         $chainAdapter->transportSettings = $this->request->getBodyParam('transportTypes.' . $chainAdapter->transportType);
+        $chainAdapter->transportClass = null; // reset
 
         if (!Craft::$app->getElements()->saveElement($chainAdapter)) {
             if ($this->request->getAcceptsJson()) {

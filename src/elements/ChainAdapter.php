@@ -78,7 +78,8 @@ class ChainAdapter extends Element
         }
 
         // figure out transport class
-        if (null !== ($adapter = $this->getTransportAdapter())
+        if (null === $this->transportClass
+            && null !== ($adapter = $this->getTransportAdapter())
             && null !== ($transport = $adapter->defineTransport())
         ) {
             if (!$transport instanceof AbstractTransport && is_array($transport)) {
