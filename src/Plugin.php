@@ -6,14 +6,14 @@ use bertoost\mailerchain\traits\PluginComponentsTrait;
 use bertoost\mailerchain\traits\PluginEventsTrait;
 use Craft;
 use craft\base\Plugin as BasePlugin;
+use craft\helpers\UrlHelper;
 use craft\i18n\PhpMessageSource;
+use yii\web\Response;
 
 class Plugin extends BasePlugin
 {
     use PluginEventsTrait,
         PluginComponentsTrait;
-
-    public bool $hasCpSection = true;
 
     public function init(): void
     {
@@ -46,5 +46,10 @@ class Plugin extends BasePlugin
                 'mailjet-app' => 'app',
             ],
         ];
+    }
+
+    public function getSettingsResponse(): Response
+    {
+        return Craft::$app->controller->redirect(UrlHelper::cpUrl('mailerchain'));
     }
 }

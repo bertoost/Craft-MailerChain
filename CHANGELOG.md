@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Removed custom CP section and added redirect for plugin settings
 - Fixed saving transport settings in JSON format for non-json supporting databases
 
 ## v1.0.0-beta2 - 2023-02-18
