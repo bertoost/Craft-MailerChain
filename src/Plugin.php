@@ -15,6 +15,8 @@ class Plugin extends BasePlugin
     use PluginEventsTrait,
         PluginComponentsTrait;
 
+    public bool $hasCpSettings = true;
+
     public function init(): void
     {
         Craft::setAlias('@bertoost\mailerchain', $this->getBasePath());
