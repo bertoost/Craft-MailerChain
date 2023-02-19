@@ -96,7 +96,7 @@ class ChainAdapter extends Element
     {
         $data = [
             'transportType' => $this->transportType,
-            'transportSettings' => $this->transportSettings,
+            'transportSettings' => is_array($this->transportSettings) ? Json::encode($this->transportSettings) : null,
             'transportClass' => $this->transportClass,
             'ranking' => $this->ranking,
             'sent' => $this->sent,
