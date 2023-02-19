@@ -3,6 +3,7 @@
 namespace bertoost\mailerchain\adapters;
 
 use bertoost\mailerchain\elements\ChainAdapter;
+use Craft;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
@@ -14,11 +15,21 @@ class MailerChainAdapter extends BaseTransportAdapter
         return 'Mailer Chain';
     }
 
+    public function getSettingsHtml(): ?string
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'mailerchain/adapter/settings', [
+                'adapter' => $this,
+                'valid' => ChainAdapter::find()->testSuccess()->exists(),
+            ]
+        );
+    }
+
     public function defineTransport(): array|AbstractTransport
     {
         try {
             /** @var null|ChainAdapter $chainAdapter */
-            $chainAdapter = ChainAdapter::find()->random()->one();
+            $chainAdapter = ChainAdapter::find()->testSuccess()->random()->one();
 
             if (null === $chainAdapter) {
                 throw new \RuntimeException('There is no configured chain adapter found.');

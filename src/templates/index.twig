@@ -13,6 +13,7 @@
         id: chainAdapter.id,
         title: chainAdapter.title,
         transportType: chainAdapter.transportType,
+        testSuccess: chainAdapter.testSuccess,
         sent: chainAdapter.sent,
         url: url('mailerchain/edit/' ~ chainAdapter.id)
     }]) -%}
@@ -26,7 +27,19 @@
     var columns = [
         { name: '__slot:title', title: Craft.t('app', 'Name') },
         { name: 'transportType', title: Craft.t('app', 'Transport Type') },
-        { name: 'sent', title: Craft.t('mailerchain', 'Sent') },
+        {
+            name: 'testSuccess',
+            title: Craft.t('mailerchain', 'Test success'),
+            dataClass: 'thin centeralign',
+            callback: function(value) {
+                if (value) {
+                    return '<span class="success" title="'+Craft.t('app', 'Yes')+'" aria-label="'+Craft.t('app', 'Yes')+'" data-icon="check"></span>';
+                }
+
+                return '<span class="warning" title="'+Craft.t('app', 'No')+'" aria-label="'+Craft.t('app', 'No')+'" data-icon="alert"></span>';
+            }
+        },
+        { name: 'sent', title: Craft.t('mailerchain', 'Sent'), dataClass: 'thin centeralign' },
     ];
 
     new Craft.VueAdminTable({
@@ -36,6 +49,7 @@
         deleteAction: 'mailerchain/adapter/delete',
         deleteConfirmationMessage: Craft.t('mailerchain', 'Are you sure you want to delete "{name}" from the list?'),
         emptyMessage: Craft.t('app', 'No mailers in the chain exist yet.'),
-        tableData: {{ tableData|json_encode|raw }}
+        tableData: {{ tableData|json_encode|raw }},
+        padded: true
     });
 {% endjs %}

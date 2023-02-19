@@ -6,7 +6,9 @@ use bertoost\mailerchain\elements\db\ChainAdapterQuery;
 use bertoost\mailerchain\Plugin;
 use Craft;
 use craft\base\Element;
+use craft\helpers\Json;
 use craft\helpers\MailerHelper;
+use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\TransportAdapterInterface;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 
@@ -19,6 +21,8 @@ class ChainAdapter extends Element
     public ?string $transportClass = null;
 
     public int $sent = 0;
+
+    public bool $testSuccess = false;
 
     public int $ranking = 0;
 
@@ -66,6 +70,11 @@ class ChainAdapter extends Element
         return true;
     }
 
+    public function getUrl(): ?string
+    {
+        return UrlHelper::cpUrl('mailerchain/edit/'.$this->id);
+    }
+
     public static function find(): ChainAdapterQuery
     {
         return new ChainAdapterQuery(static::class);
@@ -96,9 +105,10 @@ class ChainAdapter extends Element
     {
         $data = [
             'transportType' => $this->transportType,
-            'transportSettings' => $this->transportSettings,
+            'transportSettings' => is_array($this->transportSettings) ? Json::encode($this->transportSettings) : null,
             'transportClass' => $this->transportClass,
             'ranking' => $this->ranking,
+            'testSuccess' => $this->testSuccess,
             'sent' => $this->sent,
         ];
 

@@ -11,9 +11,10 @@ class Install extends Migration
         $this->createTable('{{%mailerchain}}', [
             'id' => $this->primaryKey(),
             'transportType' => $this->string()->notNull(),
-            'transportSettings' => $this->json()->null(),
+            'transportSettings' => $this->longText()->null(),
             'transportClass' => $this->string()->notNull(),
             'sent' => $this->integer()->defaultValue(0),
+            'testSuccess' => $this->boolean()->defaultValue(false),
             'ranking' => $this->integer()->defaultValue(0),
             // defaults
             'dateCreated' => $this->dateTime()->notNull(),
