@@ -25,7 +25,7 @@
   "extra": {
     "name": "Mailer Chain",
     "handle": "mailerchain",
-    "hasCpSection": false,
+    "hasCpSettings": true,
     "developer": "Bert Oost",
     "developerUrl": "https://bertoost.com",
     "documentationUrl": "https://github.com/bertoost/Craft-MailerChain/blob/master/README.md"
