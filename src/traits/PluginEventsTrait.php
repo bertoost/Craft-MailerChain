@@ -12,6 +12,7 @@ use craft\mail\Mailer;
 use craft\services\Elements;
 use craft\web\UrlManager;
 use yii\base\Event;
+use yii\mail\BaseMailer;
 use yii\mail\MailEvent;
 
 trait PluginEventsTrait
@@ -46,11 +47,24 @@ trait PluginEventsTrait
 
         Event::on(
             Mailer::class,
-            Mailer::EVENT_AFTER_SEND,
+            BaseMailer::EVENT_AFTER_SEND,
             static function (MailEvent $event) {
-                if ($event->isSuccessful) {
-                    $transporter = $event->message->mailer->getTransport();
-                    Plugin::getInstance()->getChainAdapter()->increaseSentByTransport($transporter::class);
+                if ($event->message->key === 'test_email' || $event->isSuccessful) {
+                    $service = Plugin::getInstance()->getChainAdapter();
+                    $transport = $event->message->mailer->getTransport();
+                    $chainAdapter = $service->getByTransportClass($transport::class);
+
+                    if (null === $chainAdapter) {
+                        return;
+                    }
+
+                    if ($event->isSuccessful) {
+                        $service->increaseSent($chainAdapter);
+                    }
+
+                    if ($event->message->key === 'test_email') {
+                        $service->registerTestStatus($chainAdapter, $event->isSuccessful);
+                    }
                 }
             }
         );

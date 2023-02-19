@@ -18,6 +18,8 @@ class ChainAdapterQuery extends ElementQuery
 
     public string $transportClass = '';
 
+    public ?bool $testSuccess = null;
+
     protected array $defaultOrderBy = [
         'FIELD(mailerchain.ranking, 0)' => SORT_ASC,
         'mailerchain.ranking' => SORT_ASC,
@@ -33,6 +35,13 @@ class ChainAdapterQuery extends ElementQuery
     public function transportClass(string $value): self
     {
         $this->transportClass = $value;
+
+        return $this;
+    }
+
+    public function testSuccess(bool $success = true): self
+    {
+        $this->testSuccess = $success;
 
         return $this;
     }
@@ -55,6 +64,7 @@ class ChainAdapterQuery extends ElementQuery
             'mailerchain.transportSettings',
             'mailerchain.transportClass',
             'mailerchain.sent',
+            'mailerchain.testSuccess',
             'mailerchain.ranking',
         ]);
 
@@ -64,6 +74,10 @@ class ChainAdapterQuery extends ElementQuery
 
         if ($this->transportClass) {
             $this->subQuery->andWhere(Db::parseParam('mailerchain.transportClass', $this->transportClass));
+        }
+
+        if ($this->testSuccess) {
+            $this->subQuery->andWhere(Db::parseParam('mailerchain.testSuccess', $this->testSuccess));
         }
 
         return parent::beforePrepare();

@@ -56,12 +56,14 @@ class AdapterController extends Controller
 
     public function actionSave(): ?Response
     {
+        $this->requirePostRequest();
+
         $elementId = $this->request->getBodyParam('id');
 
         if ($elementId) {
             $chainAdapter = ChainAdapter::findOne(['id' => $elementId]);
             if (!$chainAdapter) {
-                throw new BadRequestHttpException('Invalid chain adapter ID: ' . $elementId);
+                throw new BadRequestHttpException('Invalid chain adapter ID: '.$elementId);
             }
         } else {
             $chainAdapter = new ChainAdapter();
@@ -70,7 +72,7 @@ class AdapterController extends Controller
         // Populate the event with the form data
         $chainAdapter->title = $this->request->getBodyParam('title');
         $chainAdapter->transportType = $this->request->getRequiredBodyParam('transportType');
-        $chainAdapter->transportSettings = $this->request->getBodyParam('transportTypes.' . $chainAdapter->transportType);
+        $chainAdapter->transportSettings = $this->request->getBodyParam('transportTypes.'.$chainAdapter->transportType);
         $chainAdapter->transportClass = null; // reset
 
         if (!Craft::$app->getElements()->saveElement($chainAdapter)) {
@@ -94,7 +96,7 @@ class AdapterController extends Controller
 
         $this->setSuccessFlash(Craft::t('mailerchain', 'Chain adapter saved.'));
 
-        return $this->redirect('mailerchain/edit/' . $chainAdapter->id);
+        return $this->redirect('mailerchain/edit/'.$chainAdapter->id);
     }
 
     public function actionReorder(): Response

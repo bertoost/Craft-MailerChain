@@ -29,7 +29,7 @@ class MailerChainAdapter extends BaseTransportAdapter
     {
         try {
             /** @var null|ChainAdapter $chainAdapter */
-            $chainAdapter = ChainAdapter::find()->random()->one();
+            $chainAdapter = ChainAdapter::find()->testSuccess()->random()->one();
 
             if (null === $chainAdapter) {
                 throw new \RuntimeException('There is no configured chain adapter found.');

@@ -46,28 +46,23 @@ class ChainAdapterService extends Component
         return $transportTypeOptions;
     }
 
-    /**
-     * When the defined transport is a configuration array, there probably is a native support transporter for it
-     * try figuring out this, by calling the set/get transporter of the mailer
-     */
-    public function determineMailerTransportByConfig(array $transportConfig): TransportInterface
+    public function getByTransportClass(string $transportClass): ?ChainAdapter
     {
-        $mailer = new Mailer();
-        $mailer->setTransport($transportConfig);
-
-        return $mailer->getTransport();
+        return ChainAdapter::find()->transportClass($transportClass)->one();
     }
 
-    public function increaseSentByTransport(string $transportClass): bool
+    public function increaseSent(ChainAdapter $chainAdapter): bool
     {
-        $chainAdapter = ChainAdapter::find()->transportClass($transportClass)->one();
-        if (null !== $chainAdapter) {
-            ++$chainAdapter->sent;
+        ++$chainAdapter->sent;
 
-            return Craft::$app->getElements()->saveElement($chainAdapter);
-        }
+        return Craft::$app->getElements()->saveElement($chainAdapter);
+    }
 
-        return false;
+    public function registerTestStatus(ChainAdapter $chainAdapter, bool $testSuccess): bool
+    {
+        $chainAdapter->testSuccess = $testSuccess;
+
+        return Craft::$app->getElements()->saveElement($chainAdapter);
     }
 
     public function reorder(array $ids): bool
@@ -78,11 +73,11 @@ class ChainAdapterService extends Component
             if (null !== $chainAdapter) {
                 $chainAdapter->ranking = ($i + 1);
 
-                return Craft::$app->getElements()->saveElement($chainAdapter);
+                Craft::$app->getElements()->saveElement($chainAdapter);
             }
         }
 
-        return false;
+        return true;
     }
 
     public function delete(int $id): bool
@@ -94,5 +89,17 @@ class ChainAdapterService extends Component
         }
 
         return false;
+    }
+
+    /**
+     * When the defined transport is a configuration array, there probably is a native support transporter for it
+     * try figuring out this, by calling the set/get transporter of the mailer
+     */
+    public function determineMailerTransportByConfig(array $transportConfig): TransportInterface
+    {
+        $mailer = new Mailer();
+        $mailer->setTransport($transportConfig);
+
+        return $mailer->getTransport();
     }
 }
