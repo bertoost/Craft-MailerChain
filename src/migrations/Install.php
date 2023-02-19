@@ -32,6 +32,6 @@ class Install extends Migration
         $this->dropForeignKeyIfExists('{{%mailerchain}}', 'id');
         $this->dropTableIfExists('{{%mailerchain}}');
 
-        return false;
+        return true;
     }
 }
