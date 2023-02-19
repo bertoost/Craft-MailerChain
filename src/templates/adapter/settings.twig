@@ -1,0 +1,5 @@
+{% if not valid %}
+    <span class="warning" title="{{ 'No mailer chain configured.' | t('mailerchain') }}" aria-label="{{ 'No mailer chain configured.' | t('mailerchain') }}" data-icon="alert">
+        {{ 'No mailer chain configured. Go to the plugin settings to setup and test mail transporters in the chain.' | t('mailerchain') }}
+    </span>
+{% endif %}

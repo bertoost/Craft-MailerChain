@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Added message to the adapter settings view when there is no or not successful tested adapter in the chain
 - Removed custom CP section and added redirect for plugin settings
 - Fixed saving transport settings in JSON format for non-json supporting databases
 
