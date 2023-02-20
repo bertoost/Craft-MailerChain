@@ -36,3 +36,7 @@ composer require bertoost/craft-mailerchain
 Just use the Craft Mailer to send emails, normally.
 
 This plugin acts like a mail adapter and passes a random configured adapter to the Mailer.
+
+## Known issues
+
+- When this chain is configured to be the mail transport for Craft, you change the transport and test it without saving the settings. The check will fail and if the tested transport is in the chain-list, it will update the count & test-success status. 
