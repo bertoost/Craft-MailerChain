@@ -4,6 +4,7 @@ namespace bertoost\mailerchain\adapters;
 
 use bertoost\mailerchain\elements\ChainAdapter;
 use Craft;
+use craft\helpers\App;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
@@ -42,5 +43,12 @@ class MailerChainAdapter extends BaseTransportAdapter
         }
 
         return $adapter->defineTransport();
+    }
+
+    public static function isUsed(): bool
+    {
+        $settings = App::mailSettings();
+
+        return $settings->transportType === self::class;
     }
 }

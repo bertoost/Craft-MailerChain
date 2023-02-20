@@ -1,5 +1,11 @@
 # Craft CMS - Mailer chain
 
+## v1.0.0-beta4 - 2023-02-20
+
+### Changed
+
+- Improved checking using this mailer chain adapter is configured in the Craft mail settings
+
 ## v1.0.0-beta3 - 2023-02-19
 
 ### Changed

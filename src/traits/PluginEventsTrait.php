@@ -49,9 +49,13 @@ trait PluginEventsTrait
             Mailer::class,
             BaseMailer::EVENT_AFTER_SEND,
             static function (MailEvent $event) {
+                if (!MailerChainAdapter::isUsed()) {
+                    return;
+                }
+
                 if ($event->message->key === 'test_email' || $event->isSuccessful) {
                     $service = Plugin::getInstance()->getChainAdapter();
-                    $transport = $event->message->mailer->getTransport();
+                    $transport = $event->sender->getTransport();
                     $chainAdapter = $service->getByTransportClass($transport::class);
 
                     if (null === $chainAdapter) {
