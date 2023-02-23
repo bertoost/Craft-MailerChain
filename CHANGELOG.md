@@ -1,5 +1,11 @@
 # Craft CMS - Mailer chain
 
+## v1.0.0 - 2023-02-23
+
+### Changed
+
+- Changed random picking configured mailer chain element by ordered by sent, ranking and randomness
+
 ## v1.0.0-beta4 - 2023-02-20
 
 ### Changed

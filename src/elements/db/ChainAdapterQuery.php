@@ -48,9 +48,18 @@ class ChainAdapterQuery extends ElementQuery
 
     public function random(): self
     {
-        $this->orderBy = null;
+        $this->orderBy('RAND()');
 
-        parent::orderBy('RAND()');
+        return $this;
+    }
+
+    public function orderBySent(): self
+    {
+        $this->addOrderBy([
+            'mailerchain.sent' => SORT_ASC,
+            'mailerchain.ranking' => SORT_ASC,
+            'RAND()' => '',
+        ]);
 
         return $this;
     }
