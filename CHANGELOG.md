@@ -6,6 +6,10 @@
 
 - Dummy transport instead of directly return a configured chain transport 
 
+### Changed
+
+- Change transport on `Mailer::BEFORE_PREP` instead to support Campaign plugin
+
 ## v1.0.0 - 2023-02-23
 
 ### Changed

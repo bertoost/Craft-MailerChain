@@ -5,6 +5,8 @@ namespace bertoost\mailerchain\traits;
 use bertoost\mailerchain\adapters\MailerChainAdapter;
 use bertoost\mailerchain\elements\ChainAdapter;
 use bertoost\mailerchain\Plugin;
+use bertoost\mailerchain\transports\MailerChainTransportDummy;
+use craft\errors\MissingComponentException;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\MailerHelper;
@@ -47,6 +49,36 @@ trait PluginEventsTrait
 
         Event::on(
             Mailer::class,
+            Mailer::EVENT_BEFORE_PREP,
+            static function (MailEvent $event) {
+                /** @var Mailer $mailer */
+                $mailer = $event->sender;
+
+                if (!MailerChainAdapter::isUsed()
+                    || !MailerChainTransportDummy::isUsed($mailer->getTransport())
+                ) {
+                    return;
+                }
+
+                try {
+                    /** @var null|ChainAdapter $chainAdapter */
+                    $chainAdapter = ChainAdapter::find()->testSuccess()->orderBySent()->one();
+
+                    if (null === $chainAdapter) {
+                        throw new MissingComponentException('There is no configured chain adapter found.');
+                    }
+
+                    $adapter = $chainAdapter->getTransportAdapter();
+                }  catch (\Exception $e) {
+                    throw new MissingComponentException();
+                }
+
+                $mailer->setTransport($adapter->defineTransport());
+            }
+        );
+
+        Event::on(
+            Mailer::class,
             BaseMailer::EVENT_AFTER_SEND,
             static function (MailEvent $event) {
                 if (!MailerChainAdapter::isUsed()) {
@@ -54,8 +86,11 @@ trait PluginEventsTrait
                 }
 
                 if ($event->message->key === 'test_email' || $event->isSuccessful) {
+                    /** @var Mailer $mailer */
+                    $mailer = $event->sender;
+
                     $service = Plugin::getInstance()->getChainAdapter();
-                    $transport = $event->sender->getTransport();
+                    $transport = $mailer->getTransport();
                     $chainAdapter = $service->getByTransportClass($transport::class);
 
                     if (null === $chainAdapter) {

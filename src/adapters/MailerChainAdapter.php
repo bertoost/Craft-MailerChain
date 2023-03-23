@@ -3,7 +3,9 @@
 namespace bertoost\mailerchain\adapters;
 
 use bertoost\mailerchain\elements\ChainAdapter;
+use bertoost\mailerchain\transports\MailerChainTransportDummy;
 use Craft;
+use craft\errors\MissingComponentException;
 use craft\helpers\App;
 use craft\mail\transportadapters\BaseTransportAdapter;
 use craft\mail\transportadapters\Sendmail;
@@ -28,21 +30,7 @@ class MailerChainAdapter extends BaseTransportAdapter
 
     public function defineTransport(): array|AbstractTransport
     {
-        try {
-            /** @var null|ChainAdapter $chainAdapter */
-            $chainAdapter = ChainAdapter::find()->testSuccess()->orderBySent()->one();
-
-            if (null === $chainAdapter) {
-                throw new \RuntimeException('There is no configured chain adapter found.');
-            }
-
-            $adapter = $chainAdapter->getTransportAdapter();
-        }  catch (\Exception $e) {
-            // Fallback to the PHP mailer
-            $adapter = new Sendmail();
-        }
-
-        return $adapter->defineTransport();
+        return new MailerChainTransportDummy();
     }
 
     public static function isUsed(): bool
