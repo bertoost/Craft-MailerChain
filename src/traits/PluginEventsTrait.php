@@ -5,8 +5,7 @@ namespace bertoost\mailerchain\traits;
 use bertoost\mailerchain\adapters\MailerChainAdapter;
 use bertoost\mailerchain\elements\ChainAdapter;
 use bertoost\mailerchain\Plugin;
-use bertoost\mailerchain\transports\MailerChainTransportDummy;
-use craft\errors\MissingComponentException;
+use bertoost\mailerchain\transports\MailerChainTransport;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\MailerHelper;
@@ -49,51 +48,21 @@ trait PluginEventsTrait
 
         Event::on(
             Mailer::class,
-            Mailer::EVENT_BEFORE_PREP,
+            BaseMailer::EVENT_AFTER_SEND,
             static function (MailEvent $event) {
                 /** @var Mailer $mailer */
                 $mailer = $event->sender;
+                $transport = $mailer->getTransport();
 
-                if (!MailerChainAdapter::isUsed()
-                    || !MailerChainTransportDummy::isUsed($mailer->getTransport())
-                ) {
-                    return;
-                }
-
-                try {
-                    /** @var null|ChainAdapter $chainAdapter */
-                    $chainAdapter = ChainAdapter::find()->testSuccess()->orderBySent()->one();
-
-                    if (null === $chainAdapter) {
-                        throw new MissingComponentException('There is no configured chain adapter found.');
-                    }
-
-                    $adapter = $chainAdapter->getTransportAdapter();
-                }  catch (\Exception $e) {
-                    throw new MissingComponentException();
-                }
-
-                $mailer->setTransport($adapter->defineTransport());
-            }
-        );
-
-        Event::on(
-            Mailer::class,
-            BaseMailer::EVENT_AFTER_SEND,
-            static function (MailEvent $event) {
-                if (!MailerChainAdapter::isUsed()) {
+                if (!$transport instanceof MailerChainTransport) {
                     return;
                 }
 
                 if ($event->message->key === 'test_email' || $event->isSuccessful) {
-                    /** @var Mailer $mailer */
-                    $mailer = $event->sender;
-
                     $service = Plugin::getInstance()->getChainAdapter();
-                    $transport = $mailer->getTransport();
-                    $chainAdapter = $service->getByTransportClass($transport::class);
+                    $chainAdapter = $service->getByTransportClass(get_class($transport->getUsedTransport()));
 
-                    if (null === $chainAdapter) {
+                    if (!$chainAdapter instanceof ChainAdapter) {
                         return;
                     }
 
