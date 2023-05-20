@@ -3,12 +3,9 @@
 namespace bertoost\mailerchain\adapters;
 
 use bertoost\mailerchain\elements\ChainAdapter;
-use bertoost\mailerchain\transports\MailerChainTransportDummy;
+use bertoost\mailerchain\transports\MailerChainTransport;
 use Craft;
-use craft\errors\MissingComponentException;
-use craft\helpers\App;
 use craft\mail\transportadapters\BaseTransportAdapter;
-use craft\mail\transportadapters\Sendmail;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 
 class MailerChainAdapter extends BaseTransportAdapter
@@ -30,13 +27,6 @@ class MailerChainAdapter extends BaseTransportAdapter
 
     public function defineTransport(): array|AbstractTransport
     {
-        return new MailerChainTransportDummy();
-    }
-
-    public static function isUsed(): bool
-    {
-        $settings = App::mailSettings();
-
-        return $settings->transportType === self::class;
+        return new MailerChainTransport();
     }
 }

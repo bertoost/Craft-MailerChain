@@ -1,5 +1,11 @@
 # Craft CMS - Mailer chain
 
+## Unreleased
+
+### Changed
+
+- Moved logic of changing transport to deeper level at the chain transporter
+
 ## v1.1.0 - 2023-03-23
 
 ### Added
