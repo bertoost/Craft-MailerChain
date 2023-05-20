@@ -1,6 +1,6 @@
 # Craft CMS - Mailer chain
 
-## Unreleased
+## v1.2.0 - 2023-05-20
 
 ### Changed
 
